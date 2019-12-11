@@ -1,0 +1,58 @@
+apiVersion: skaffold/v1beta5
+kind: Config
+build:
+
+  tagPolicy:
+    ## Use this for local development purposes where u need random sha commit as your tag
+    sha256: {}
+
+  artifacts:
+  - image: golang-rest-api
+    context: .
+    docker:
+      dockerfile: DockerFile
+      cacheFrom:
+        - alpine:3.7
+  local: {}
+
+deploy:
+  helm:
+    releases:
+    - name: golang-rest-api
+      chartPath: helm-manifests
+      namespace: demo
+      recreatePods: true
+      setValueTemplates:
+        image.repository: "{{.IMAGE_NAME}}"
+        image.tag: "{{.DIGEST}}"
+
+
+profiles:
+  - name: local
+    deploy:
+      helm:
+        releases:
+        - name: golang-rest-api
+          namespace: demo
+          recreatePods: true
+  - name: qa
+    build:
+      tagPolicy:
+        envTemplate:
+          template: "{{.IMAGE_NAME}}:{{.VERSION}}"
+      artifacts:
+      - image: golang-rest-api
+        context: .
+        docker:
+          dockerfile: DockerFile
+      local: {}
+    deploy:
+      helm:
+        releases:
+        - name: golang-rest-api
+          chartPath: helm-manifests
+          namespace: demo
+          recreatePods: true
+          setValueTemplates:
+            image.repository: "{{.IMAGE_NAME}}"
+            image.tag: "{{.VERSION}}"

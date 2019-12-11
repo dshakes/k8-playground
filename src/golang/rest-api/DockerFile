@@ -1,0 +1,16 @@
+
+FROM chandu1221/gobase:1.4 AS BINARY
+WORKDIR /api
+COPY . .
+RUN make pipeline
+RUN cd target && cp -r . /api
+RUN chmod +x -R /api
+
+FROM scratch
+WORKDIR /api
+COPY --from=BINARY /api .
+ENTRYPOINT ["./go-rest-microservice-linux-amd64"]
+EXPOSE 8000
+
+
+

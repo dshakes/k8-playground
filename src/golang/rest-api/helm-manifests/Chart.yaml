@@ -1,0 +1,19 @@
+apiVersion: v2 #(required)
+name: golang-rest-api #(required)
+version: 0.1.2 #(required)
+description: A Helm chart for egis application
+keywords:
+  - egis
+  - api
+  - playground
+home: https://github/chandu1221/skaffold-argocd-api
+sources:
+  - https://github/chandu1221/skaffold-argocd-api/tree/master/src/go-rest-microservice
+maintainers:
+  - name: Chandra Shekhar Mudarapu
+    email: chandu1221@gmail.com
+    url: https://github.com/chandu1221
+engine: gotpl
+appVersion: "1.0"
+deprecated: false
+tillerVersion: ">=2.10.0"
